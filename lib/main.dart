@@ -1,14 +1,13 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:pashudhan_ai/screens/authentication/login_page.dart';
-import 'package:pashudhan_ai/utils/app_colors.dart';
+import 'screens/authentication/login_page.dart';
+import 'utils/app_colors.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const PashudhanAIApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PashudhanAIApp extends StatelessWidget {
+  const PashudhanAIApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +15,13 @@ class MyApp extends StatelessWidget {
       title: 'Pashudhan-AI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: AppColors.primaryColor,
-        scaffoldBackgroundColor: AppColors.backgroundColor,
-        fontFamily: 'Inter',
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: AppColors.textColor),
-          bodyMedium: TextStyle(color: AppColors.textColor),
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          iconTheme: IconThemeData(color: AppColors.textColor),
-          titleTextStyle: TextStyle(
-              color: AppColors.textColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold),
-        ),
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        useMaterial3: true,
+        fontFamily: 'Roboto', // Example font, you can change this
       ),
-      home: const LoginPage(),
+      home: const LoginPage(), // Start the app with the LoginPage
     );
   }
 }
-
