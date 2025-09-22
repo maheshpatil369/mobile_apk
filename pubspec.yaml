@@ -1,0 +1,34 @@
+name: pashudhan_ai_frontend
+description: "A Flutter-based frontend for the Pashudhan-AI application."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_picker: ^1.0.7 # For camera and gallery access
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+# IMPORTANT:
+# For the camera functionality to work, you MUST add permissions.
+#
+# For iOS (in Info.plist):
+# <key>NSCameraUsageDescription</key>
+# <string>This app needs access to the camera to identify livestock.</string>
+# <key>NSPhotoLibraryUsageDescription</key>
+# <string>This app needs access to the photo library to identify livestock.</string>
+#
+# For Android (in AndroidManifest.xml):
+# Add this inside the <manifest> tag:
+# <uses-permission android:name="android.permission.CAMERA" />
+
