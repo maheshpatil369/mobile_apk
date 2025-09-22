@@ -4,10 +4,10 @@ import '../models/user.dart';
 
 // Dummy data for the user profile.
 const mockUser = User(
-  name: 'Mahesh Patil',
-  email: 'mahesh.patil@example.com',
+  name: 'Admin Central',
+  email: 'admin.central@example.com',
   memberSince: '2023',
-  profileImageUrl: 'https://placehold.co/150x150/27AE60/FFFFFF?text=MP',
+  profileImageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/001/840/612/small/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg',
   totalScans: 42,
   healthyAnimals: 35,
 );

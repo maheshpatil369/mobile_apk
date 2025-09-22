@@ -7,7 +7,9 @@ class AnimalRecord {
   final String title;
   final String date;
   final String status;
-  final String imageUrl; // Using a placeholder image URL for now
+  final String imageUrl;
+  final String batchNo;
+  final bool isUploaded;
 
   const AnimalRecord({
     required this.id,
@@ -15,6 +17,8 @@ class AnimalRecord {
     required this.date,
     required this.status,
     required this.imageUrl,
+    required this.batchNo,
+    required this.isUploaded,
   });
 }
 

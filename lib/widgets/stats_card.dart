@@ -27,7 +27,7 @@ class StatsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, size: 32, color: AppColors.primary),
-            const SizedBox(height: 12),
+            const Spacer(),
             Text(
               value,
               style: const TextStyle(

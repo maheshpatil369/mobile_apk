@@ -32,16 +32,17 @@ class RecordListItem extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
             record.imageUrl,
-            width: 56,
-            height: 56,
+            width: 60,
+            height: 60,
             fit: BoxFit.cover,
             // Error handling for the image
             errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.pets, size: 56),
+                const Icon(Icons.pets, size: 60),
           ),
         ),
         title: Text(
@@ -49,13 +50,41 @@ class RecordListItem extends StatelessWidget {
           style: const TextStyle(
               fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
-        subtitle: Text('Date: ${record.date}',
-            style: const TextStyle(color: AppColors.textSecondary)),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4),
+            Text('Date: ${record.date}',
+                style:
+                    const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+            const SizedBox(height: 4),
+            Text('Batch No: ${record.batchNo}',
+                style:
+                    const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                const Text('Uploaded: ',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 12)),
+                Text(
+                  record.isUploaded ? 'Yes' : 'No',
+                  style: TextStyle(
+                      color: record.isUploaded
+                          ? AppColors.primary
+                          : AppColors.error,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             color: _getStatusColor(record.status).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             record.status,
@@ -68,10 +97,8 @@ class RecordListItem extends StatelessWidget {
         ),
         onTap: () {
           // You can navigate to a detailed result page from here
-          // For example: Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(record: record)));
         },
       ),
     );
   }
 }
-
