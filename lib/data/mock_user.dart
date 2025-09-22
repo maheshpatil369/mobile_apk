@@ -1,10 +1,13 @@
 // lib/data/mock_user.dart
-import 'package:pashudhan_ai_frontend/models/user.dart';
 
-class MockUser {
-  static User user = User(
-    name: 'Kisan Sharma',
-    farmName: 'Gopal Dairy Farm',
-    profileImageUrl: 'https://placehold.co/100x100/D2B48C/FFFFFF/png?text=K',
-  );
-}
+import '../models/user.dart';
+
+// Dummy data for the user profile.
+const mockUser = User(
+  name: 'Mahesh Patil',
+  email: 'mahesh.patil@example.com',
+  memberSince: '2023',
+  profileImageUrl: 'https://placehold.co/150x150/27AE60/FFFFFF?text=MP',
+  totalScans: 42,
+  healthyAnimals: 35,
+);

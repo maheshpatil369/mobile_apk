@@ -1,9 +1,20 @@
 // lib/widgets/stats_card.dart
-import 'package:flutter/material.dart';
-import 'package:pashudhan_ai_frontend/utils/app_colors.dart';
 
+import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+
+// A reusable card widget to display a statistic.
 class StatsCard extends StatelessWidget {
-  const StatsCard({super.key});
+  final String label;
+  final String value;
+  final IconData icon;
+
+  const StatsCard({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,31 +24,28 @@ class StatsCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStatRow(Icons.pets, 'Total Animals Analyzed', '15'),
-            const Divider(),
-            _buildStatRow(Icons.data_usage, 'Pending Uploads', '3'),
-            const Divider(),
-            _buildStatRow(Icons.star, 'Most Common Breed', 'Jersey'),
+            Icon(icon, size: 32, color: AppColors.primary),
+            const SizedBox(height: 12),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatRow(IconData icon, String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.primaryColor),
-          const SizedBox(width: 16),
-          Text(title, style: const TextStyle(fontSize: 16)),
-          const Spacer(),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ],
       ),
     );
   }

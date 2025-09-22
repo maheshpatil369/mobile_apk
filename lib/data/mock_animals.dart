@@ -1,38 +1,44 @@
-
 // lib/data/mock_animals.dart
-import 'package:pashudhan_ai_frontend/models/animal_record.dart';
 
-class MockAnimals {
-  static List<AnimalRecord> records = [
-    AnimalRecord(
-      id: '1',
-      breed: 'Jersey',
-      confidence: 97.5,
-      healthStatus: 'Healthy',
-      age: 4,
-      imageUrl: 'https://placehold.co/400x400/D2B48C/FFFFFF/png?text=Jersey+Cow',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      status: RecordStatus.analyzed,
-    ),
-    AnimalRecord(
-      id: '2',
-      breed: 'Holstein Friesian',
-      confidence: 92.1,
-      healthStatus: 'Needs Checkup',
-      age: 6,
-      imageUrl: 'https://placehold.co/400x400/3A3A3A/FFFFFF/png?text=Holstein',
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      status: RecordStatus.analyzed,
-    ),
-    AnimalRecord(
-      id: '3',
-      breed: 'Awaiting Analysis...',
-      confidence: 0,
-      healthStatus: '',
-      age: 0,
-      imageUrl: 'https://placehold.co/400x400/FFA500/FFFFFF/png?text=Pending',
-      date: DateTime.now(),
-      status: RecordStatus.pending,
-    ),
-  ];
-}
+import '../models/animal_record.dart';
+
+// This file contains a list of dummy animal records.
+// It simulates fetching data from a database or API.
+final List<AnimalRecord> mockAnimals = [
+  const AnimalRecord(
+    id: '1',
+    title: 'Holstein Cow #12A',
+    date: '2024-07-21',
+    status: 'Healthy',
+    imageUrl: 'https://placehold.co/100x100/AECBFA/333333?text=Cow+1',
+  ),
+  const AnimalRecord(
+    id: '2',
+    title: 'Jersey Bull #05C',
+    date: '2024-07-20',
+    status: 'Under Observation',
+    imageUrl: 'https://placehold.co/100x100/FAD2A2/333333?text=Bull+1',
+  ),
+  const AnimalRecord(
+    id: '3',
+    title: 'Holstein Cow #15B',
+    date: '2024-07-19',
+    status: 'Requires Attention',
+    imageUrl: 'https://placehold.co/100x100/FFB3BA/333333?text=Cow+2',
+  ),
+  const AnimalRecord(
+    id: '4',
+    title: 'Sahiwal Calf #21A',
+    date: '2024-07-18',
+    status: 'Healthy',
+    imageUrl: 'https://placehold.co/100x100/C8E6C9/333333?text=Calf+1',
+  ),
+  const AnimalRecord(
+    id: '5',
+    title: 'Gir Cow #08A',
+    date: '2024-07-17',
+    status: 'Healthy',
+    imageUrl: 'https://placehold.co/100x100/AECBFA/333333?text=Cow+3',
+  ),
+];
+

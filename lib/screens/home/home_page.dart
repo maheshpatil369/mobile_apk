@@ -1,9 +1,16 @@
-import 'package:flutter/material.dart';
+// lib/screens/home/home_page.dart
+
 import 'dart:io';
-import 'package:image_picker/image_picker.dart'; // <--- ADD THIS IMPORT
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/image_picker_util.dart';
 import '../../widgets/bottom_nav_bar.dart';
+import '../history/history_page.dart';
+import '../result/result_page.dart';
+import '../profile/profile_page.dart'; // 1. IMPORT THE PROFILE PAGE
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,17 +20,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  File? _selectedImage;
-  int _currentIndex = 0; // For bottom navigation
+  File? _selectedImageFile;
+  Uint8List? _selectedImageBytes;
+  int _currentIndex = 0;
 
   Future<void> _pickImage(ImageSource source) async {
     final imageFile = await ImagePickerUtil.pickImage(source);
-    if (imageFile != null) {
-      setState(() {
-        _selectedImage = imageFile;
-      });
-      // In a real app, you might navigate to a result page
-      // Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResultPage(image: imageFile)));
+    if (imageFile == null) return;
+
+    // Reset state before navigating
+    setState(() {
+      _selectedImageFile = null;
+      _selectedImageBytes = null;
+    });
+
+    if (kIsWeb) {
+      final bytes = await imageFile.readAsBytes();
+      setState(() => _selectedImageBytes = bytes); // Update preview for web
+      if (mounted) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ResultPage(imageBytes: bytes),
+        ));
+      }
+    } else {
+      setState(() => _selectedImageFile = imageFile); // Update preview for mobile
+      if (mounted) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ResultPage(imageFile: imageFile),
+        ));
+      }
     }
   }
 
@@ -31,25 +56,17 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _currentIndex = index;
     });
-    // Handle navigation to other screens from here
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textOnPrimary,
-        elevation: 1,
-      ),
       body: IndexedStack(
         index: _currentIndex,
         children: [
           _buildCaptureScreen(),
-          // Add other main screens here for the bottom nav bar
-          const Center(child: Text('History Page')), // Placeholder
-          const Center(child: Text('Profile Page')), // Placeholder
+          const HistoryPage(),
+          const ProfilePage(), // 2. ADD THE PROFILE PAGE TO THE LIST
         ],
       ),
       bottomNavigationBar: BottomNavBar(
@@ -60,57 +77,64 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCaptureScreen() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Image Preview Area
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.divider, width: 2),
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.grey[200],
-                ),
-                child: _selectedImage != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: Image.file(_selectedImage!, fit: BoxFit.cover),
-                      )
-                    : const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image_search,
-                              size: 80, color: AppColors.textSecondary),
-                          SizedBox(height: 16),
-                          Text(
-                            'Image preview will appear here',
-                            style: TextStyle(color: AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-              ),
-            ),
-            const SizedBox(height: 24),
+    Widget imagePreviewWidget;
+    if (kIsWeb && _selectedImageBytes != null) {
+      imagePreviewWidget = ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Image.memory(_selectedImageBytes!, fit: BoxFit.cover));
+    } else if (!kIsWeb && _selectedImageFile != null) {
+      imagePreviewWidget = ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Image.file(_selectedImageFile!, fit: BoxFit.cover));
+    } else {
+      imagePreviewWidget = const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.image_search, size: 80, color: AppColors.textSecondary),
+          SizedBox(height: 16),
+          Text('Image preview will appear here',
+              style: TextStyle(color: AppColors.textSecondary)),
+        ],
+      );
+    }
 
-            // Action Buttons
-            ElevatedButton.icon(
-              icon: const Icon(Icons.camera_alt),
-              label: const Text('Capture from Camera'),
-              style: _buttonStyle(),
-              onPressed: () => _pickImage(ImageSource.camera),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.photo_library),
-              label: const Text('Upload from Gallery'),
-              style: _buttonStyle(),
-              onPressed: () => _pickImage(ImageSource.gallery),
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.divider, width: 2),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey[200],
+                  ),
+                  child: imagePreviewWidget,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.camera_alt),
+                label: const Text('Capture from Camera'),
+                style: _buttonStyle(),
+                onPressed: () => _pickImage(ImageSource.camera),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Upload from Gallery'),
+                style: _buttonStyle(),
+                onPressed: () => _pickImage(ImageSource.gallery),
+              ),
+            ],
+          ),
         ),
       ),
     );
