@@ -69,7 +69,7 @@ final List<AnimalRecord> mockAnimals = [
     title: 'Brown Cow Grazing',
     date: '2024-07-15',
     status: 'Under Observation',
-    imageUrl: 'https://cdn.sanity.io/images/5dqbssss/production-v3/a25daafbd63d028bacd81f322618de5ea1b9bc98-6720x4480.jpg?w=3840&q=75&fit=clip&auto=format',
+    imageUrl: 'https://t3.ftcdn.net/jpg/04/48/68/02/360_F_448680223_KrAJFTL1WXZJMgOFCuMoFwgBUKYfSPkQ.jpg',
     batchNo: 'B-004',
     isUploaded: true,
   ),

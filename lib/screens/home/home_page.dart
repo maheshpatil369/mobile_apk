@@ -1,10 +1,13 @@
 // lib/screens/home/home_page.dart
 
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
+
+import 'package:pashudhan_ai_frontend/models/animal_record.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/image_picker_util.dart';
 import '../../widgets/bottom_nav_bar.dart';
@@ -23,25 +26,48 @@ class _HomePageState extends State<HomePage> {
   File? _selectedImageFile;
   Uint8List? _selectedImageBytes;
   int _currentIndex = 0;
+  bool _isAnalyzing = false;
 
   Future<void> _pickImage(ImageSource source) async {
     final imageFile = await ImagePickerUtil.pickImage(source);
     if (imageFile == null) return;
 
-    // This logic handles navigation for both mobile and web
+    setState(() {
+      _isAnalyzing = true;
+    });
+
+    // Simulate analysis delay
+    await Future.delayed(const Duration(seconds: 3));
+
+    // ✅ Read bytes BEFORE navigation
+    Uint8List? bytes;
     if (kIsWeb) {
-      final bytes = await imageFile.readAsBytes();
-      if (mounted) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ResultPage(imageBytes: bytes),
-        ));
-      }
-    } else {
-      if (mounted) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ResultPage(imageFile: imageFile),
-        ));
-      }
+      bytes = await imageFile.readAsBytes();
+    }
+
+    final dummyRecord = AnimalRecord(
+      id: '7',
+      title: 'Brown Cow Grazing',
+      date: '2024-07-15',
+      status: 'Under Observation',
+      imageUrl:
+          'https://cdn.sanity.io/images/5dqbssss/production-v3/a25daafbd63d028bacd81f322618de5ea1b9bc98-6720x4480.jpg?w=3840&q=75&fit=clip&auto=format',
+      batchNo: 'B-004',
+      isUploaded: true,
+    );
+
+    if (mounted) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ResultPage(
+          imageFile: kIsWeb ? null : imageFile,
+          imageBytes: bytes, // ✅ no await here
+          record: dummyRecord,
+        ),
+      )).then((_) {
+        setState(() {
+          _isAnalyzing = false;
+        });
+      });
     }
   }
 
@@ -69,7 +95,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // The main capture screen UI
   Widget _buildCaptureScreen() {
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -128,7 +153,27 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 child: Center(
-                  child: _buildImagePreviewWidget(),
+                  child: _isAnalyzing
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset(
+                              'assets/animations/cow-analysis.json',
+                              width: 150,
+                              height: 150,
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Analyzing Image...',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        )
+                      : _buildImagePreviewWidget(),
                 ),
               ),
             ),
@@ -160,36 +205,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Helper for the image preview area
   Widget _buildImagePreviewWidget() {
-    if (kIsWeb && _selectedImageBytes != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: Image.memory(_selectedImageBytes!,
-            fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-      );
-    } else if (!kIsWeb && _selectedImageFile != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: Image.file(_selectedImageFile!,
-            fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-      );
-    } else {
-      return const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.image_search, size: 80, color: AppColors.textSecondary),
-          SizedBox(height: 16),
-          Text(
-            'Image preview will appear here',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
-          ),
-        ],
-      );
-    }
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.image_search, size: 80, color: AppColors.textSecondary),
+        SizedBox(height: 16),
+        Text(
+          'Image preview will appear here',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+        ),
+      ],
+    );
   }
 
-  // Helper for button styling
   ButtonStyle _buttonStyle({required bool isPrimary}) {
     return ElevatedButton.styleFrom(
       backgroundColor: isPrimary ? AppColors.primary : AppColors.surface,
